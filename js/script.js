@@ -153,7 +153,7 @@ const cvvValidator = ()=>{
 }
 //form event listener, conditioned if all required field are true.
 form.addEventListener('submit', (e)=>{
-	//const creditCardSelected = paymentMethod[1].value;
+	
 	if(!nameFieldValidator()){
 		e.preventDefault();
 		console.log('name not valid');
@@ -166,7 +166,7 @@ form.addEventListener('submit', (e)=>{
 		e.preventDefault();
 		console.log('activity not valid');
 	}
-
+	//only check this fields if the credict card option was selected.
 	if(creditCardOption.hidden !== true){
 		
 		if(!cardNumberValidator())
@@ -186,3 +186,17 @@ form.addEventListener('submit', (e)=>{
 	
 
 })
+//=====================================================
+// ----------------ACCESSIBILITY---------------------
+//=====================================================
+// activityBoxInput.forEach(element=>{
+// 	element.addEventListener('focus', (e)=>{
+// 		element.parentElement.classList.add('focus');
+// 	});
+// 	element.addEventListener('blur', (e)=>{
+// 		const activeLable = document.querySelector('.focus');
+// 		if(activeLable) activeLable.classList.remove('focus');
+// 		//element.parentElement.classList.remove('focus');
+// 	})
+// })
+
