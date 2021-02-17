@@ -13,6 +13,8 @@ const creditCardOption = document.querySelector('#credit-card');
 let payOptionArray=[paypalOption, creditCardOption, bitcoinOption];
 let totalCost = 0;
 
+
+
 //disable the shirt color dropdown manu.
 shirtsColor.disabled=true;
 // give focus to name Input
@@ -84,6 +86,7 @@ function defaultPaymentMethod(){
 	paypalOption.hidden=true;
 	bitcoinOption.hidden=true;
 	
+	
 }
 //show default payment opting on page load.
 defaultPaymentMethod();
@@ -150,6 +153,7 @@ const cvvValidator = ()=>{
 }
 //form event listener, conditioned if all required field are true.
 form.addEventListener('submit', (e)=>{
+	//const creditCardSelected = paymentMethod[1].value;
 	if(!nameFieldValidator()){
 		e.preventDefault();
 		console.log('name not valid');
@@ -163,7 +167,22 @@ form.addEventListener('submit', (e)=>{
 		console.log('activity not valid');
 	}
 
-	
+	if(creditCardOption.hidden !== true){
+		
+		if(!cardNumberValidator())
+			e.preventDefault();
+			console.log('card not valid');
+
+			
+		if(!zipCodeValidator()){
+			e.preventDefault();
+			console.log('zip code not valid');
+		}
+		if(!cvvValidator()){
+			e.preventDefault();
+			console.log('cvv not valid');
+		}
+	}
 	
 
 })
