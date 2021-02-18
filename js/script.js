@@ -6,6 +6,7 @@ const jobOptionSelection = document.querySelector('#title');
 const shirtsDesign = document.querySelector('#design');
 const shirtsColor = document.querySelector('#color');
 const activityBoxInput = document.querySelectorAll('#activities-box input');
+const activityBox = document.querySelector('#activities-box');
 const paymentMethod = document.querySelectorAll('#payment option');
 const paypalOption = document.querySelector('#paypal');
 const bitcoinOption = document.querySelector('#bitcoin');
@@ -112,46 +113,74 @@ document.querySelector('#payment').addEventListener('change', (e)=>{
 //=====================================================
 // ----------------FORM VALIDATION---------------------
 //=====================================================
-//validate name field
+//validate name field. Numbers allowed thanks to ELON MUSK.
 const nameFieldValidator = ()=>{
-	const nameValue = nameElement.value;
-	const nameIsValid = /^[a-zA-Z]+ ?[a-zA-Z]*?[ -]?[a-zA-Z]*?$/.test(nameValue)
-	return nameIsValid;
+	
+	const nameIsValid = /^[a-zA-Z0-9]+ ?[a-zA-Z0-9]*?[ -]?[a-zA-Z0-9]*?$/.test(nameElement.value);
+	
+	if (nameIsValid) {
+		validationPass(nameElement);
+	} else {
+		validationFail(nameElement);
+	}
 }
 //email validation, validate most common emails.
 const emailFieldValidator=()=>{
 	const email = document.querySelector('#email');
-	const emailValue = email.value;
-	const emailIsValid = /^[^@]+@[^@.]+\.[a-z]*$/i.test(emailValue);
-	return emailIsValid;
-}
+	//const emailValue = email.value;
+	const emailIsValid = /^[^@]+@[^@.]+\.[a-z]*$/i.test(email.value);
+	
+	if (emailIsValid) {
+		validationPass(email);
+	} else {
+		validationFail(email);
+	}
+}	
 //activities validation, if no activity total should be zero
 const activiyValidator= ()=>{
 	const activityIsValid = totalCost > 0;
-	return activityIsValid;
+	if (activityIsValid) {
+		validationPass(activityBox);
+	} else {
+		validationFail(activityBox);
+	}
 }
 //card number validator, number must be between 13 and 14 no spaces or dashes.
 const cardNumberValidator = ()=>{
 	const cardNumber= document.querySelector('#cc-num')
-	const cardNumberValue = cardNumber.value;
-	const cardNumberIsValid = /^\d{13,16}$/.test(cardNumberValue);
-	return cardNumberIsValid;
+	const cardNumberIsValid = /^\d{13,16}$/.test(cardNumber.value);
+	if (cardNumberIsValid) {
+		validationPass(cardNumber);
+	} else {
+		validationFail(cardNumber);
+	}
+	
 }
 //zip code must be 5 digits no space or dash allowed
 const zipCodeValidator=()=>{
 	const zipCode = document.querySelector('#zip');
-	const zipCodeValue = zipCode.value;
-	const zipIsValid = /^\d{5}$/.test(zipCodeValue);
-	return zipIsValid;
+	const zipIsValid = /^\d{5}$/.test(zipCode.value);
+	if (zipIsValid) {
+		validationPass(zipCode);
+	} else {
+		validationFail(zipCode);
+	}
+
 }
 //cvv must be 3 digtis no space or dashes allowed.
 const cvvValidator = ()=>{
 	const cvv = document.querySelector('#cvv');
-	const cvvValue = cvv.value;
-	const cvvIsValid= /^\d{3}$/.test(cvvValue);
-	return cvvIsValid;
+	
+	const cvvIsValid= /^\d{3}$/.test(cvv.value);
+	if (cvvIsValid) {
+		validationPass(cvv);
+	} else {
+		validationFail(cvv);
+	}
+
+	
 }
-//form event listener, conditioned if all required field are true.
+//FORM EVENT LISTENER, CONDITION IF TRUE SUBMIT IF FALSE PREVENT DEFAULT.
 form.addEventListener('submit', (e)=>{
 	
 	if(!nameFieldValidator()){
@@ -204,4 +233,25 @@ for (let i = 0; i < activityBoxInput.length; i++) {
 		};
 	})
 }
+//=====================================================
+// ----------------ERROR VALIDATION HINTS--------------
+//=====================================================
+function validationPass(element) {
+	let elementLabel = element.parentNode;
+	elementLabel.className = 'valid';
+	elementLabel.classList.remove('not-valid');
+	//hides the hint is validation pass.
+	elementLabel.lastElementChild.style.display = 'none';
+	return 'is valid';
+}
 
+function validationFail(element) {
+	let elementLabel = element.parentNode;
+
+	elementLabel.className = 'not-valid';
+	elementLabel.classList.remove('valid');
+	//shows hint is validation fail.
+	elementLabel.lastElementChild.style.display = 'block';
+	
+	return 'not valid';
+}
