@@ -189,14 +189,19 @@ form.addEventListener('submit', (e)=>{
 //=====================================================
 // ----------------ACCESSIBILITY---------------------
 //=====================================================
-// activityBoxInput.forEach(element=>{
-// 	element.addEventListener('focus', (e)=>{
-// 		element.parentElement.classList.add('focus');
-// 	});
-// 	element.addEventListener('blur', (e)=>{
-// 		const activeLable = document.querySelector('.focus');
-// 		if(activeLable) activeLable.classList.remove('focus');
-// 		//element.parentElement.classList.remove('focus');
-// 	})
-// })
+//activityboxinput holds array of input.
+for (let i = 0; i < activityBoxInput.length; i++) {
+	activityBoxInput[i].addEventListener('focus', (e)=>{
+		//adds focus to active label
+		activityBoxInput[i].parentElement.classList.add('focus');
+
+	});
+	activityBoxInput[i].addEventListener('blur', (e)=>{
+		//removes focus from inactive lable.
+		const activeLable = document.querySelector('.focus');
+		if(activeLable){
+			activeLable.classList.remove('focus');
+		};
+	})
+}
 
