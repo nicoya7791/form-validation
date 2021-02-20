@@ -1,6 +1,7 @@
 // global variables
 const form = document.querySelector('form');
 const nameElement = document.querySelector('#name');
+const email = document.querySelector('#email');
 const otherJobRole = document.querySelector('#other-job-role');
 const jobOptionSelection = document.querySelector('#title');
 const shirtsDesign = document.querySelector('#design');
@@ -35,14 +36,17 @@ jobOptionSelection.addEventListener('change', (e) => {
 		}
 	}
 });
-
+//===================================================================
+//------------------T-SHIRT SECTION----------------------------------
+//===================================================================
 //event listener to display color available base on the t-shirt theme.
 shirtsDesign.addEventListener('change', (e)=>{
 	const clicked = e.target;
 	//gets the value of the selected design.
 	const clickedValue = clicked.value;
 	//if t-shirt design is selected, color options are available for that specific design.
-	if(clickedValue){		
+	if(clickedValue){	
+		//if t-shirt theme clicked then display t-shirt colors	
 		shirtsColor.disabled = false;
 		for (let i = 0; i < shirtsColor.length; i++) {
 			const element = shirtsColor[i].getAttribute('data-theme');
@@ -56,9 +60,31 @@ shirtsDesign.addEventListener('change', (e)=>{
 	}
 
 })
-//event listener on activities field set, add or substract cost of activities
+//PREVENTS USER FROM SELECTING COURSES SAME DAY AND TIME.
+function activiySelection(event){
+	const activityDayTime = event.dataset.dayAndTime;
+	for (let i = 0; i < activityBoxInput.length; i++) {
+		const element = activityBoxInput[i].dataset.dayAndTime;
+		if (activityDayTime === element && event !== activityBoxInput[i]) {
+			if(event.checked){
+			activityBoxInput[i].disabled = true;
+			}
+			else{
+				activityBoxInput[i].disabled =false
+			}
+			
+		}
+	}
+
+}
+
+//=====================================================
+// ----------ACTIVITIES EVENT LISTENER-----------------
+//=====================================================
+
 document.querySelector('#activities').addEventListener('change', (e)=>{
 	const clickedActivity = e.target;
+	activiySelection(clickedActivity);
 	//p is used to display the total value in the html
 	let p = document.querySelector('#activities-cost');
 	//cost of activity that is chosen
@@ -110,23 +136,25 @@ document.querySelector('#payment').addEventListener('change', (e)=>{
 		}
 		
 })
+
+
+
 //=====================================================
 // ----------------FORM VALIDATION---------------------
 //=====================================================
 //validate name field. Numbers allowed thanks to ELON MUSK.
 const nameFieldValidator = ()=>{
-	
 	const nameIsValid = /^[a-zA-Z0-9]+ ?[a-zA-Z0-9]*?[ -]?[a-zA-Z0-9]*?$/.test(nameElement.value);
-	
 	if (nameIsValid) {
 		validationPass(nameElement);
 	} else {
 		validationFail(nameElement);
 	}
+	return nameIsValid;
+
 }
 //email validation, validate most common emails.
 const emailFieldValidator=()=>{
-	const email = document.querySelector('#email');
 	//const emailValue = email.value;
 	const emailIsValid = /^[^@]+@[^@.]+\.[a-z]*$/i.test(email.value);
 	
@@ -135,15 +163,17 @@ const emailFieldValidator=()=>{
 	} else {
 		validationFail(email);
 	}
+	return emailIsValid;
 }	
 //activities validation, if no activity total should be zero
-const activiyValidator= ()=>{
+const activityValidator= ()=>{
 	const activityIsValid = totalCost > 0;
 	if (activityIsValid) {
 		validationPass(activityBox);
 	} else {
 		validationFail(activityBox);
 	}
+	return activityIsValid;
 }
 //card number validator, number must be between 13 and 14 no spaces or dashes.
 const cardNumberValidator = ()=>{
@@ -154,7 +184,7 @@ const cardNumberValidator = ()=>{
 	} else {
 		validationFail(cardNumber);
 	}
-	
+	return cardNumberIsValid;
 }
 //zip code must be 5 digits no space or dash allowed
 const zipCodeValidator=()=>{
@@ -165,7 +195,7 @@ const zipCodeValidator=()=>{
 	} else {
 		validationFail(zipCode);
 	}
-
+	return zipIsValid;
 }
 //cvv must be 3 digtis no space or dashes allowed.
 const cvvValidator = ()=>{
@@ -177,10 +207,11 @@ const cvvValidator = ()=>{
 	} else {
 		validationFail(cvv);
 	}
-
-	
+	return cvvIsValid;	
 }
-//FORM EVENT LISTENER, CONDITION IF TRUE SUBMIT IF FALSE PREVENT DEFAULT.
+//=============================================
+//-----------FORM EVENT LISTENER---------------
+//=============================================
 form.addEventListener('submit', (e)=>{
 	
 	if(!nameFieldValidator()){
@@ -191,16 +222,17 @@ form.addEventListener('submit', (e)=>{
 		e.preventDefault();
 		console.log('email not valid');
 	}
-	if(!activiyValidator()){
+	if(!activityValidator()){
 		e.preventDefault();
 		console.log('activity not valid');
 	}
 	//only check this fields if the credict card option was selected.
 	if(creditCardOption.hidden !== true){
 		
-		if(!cardNumberValidator())
+		if(!cardNumberValidator()){
 			e.preventDefault();
 			console.log('card not valid');
+		}
 
 			
 		if(!zipCodeValidator()){
@@ -215,6 +247,12 @@ form.addEventListener('submit', (e)=>{
 	
 
 })
+//=====================================================
+//-------------REAL TIME VALIDATION--------------------
+//=====================================================
+nameElement.addEventListener('keyup', nameFieldValidator);
+email.addEventListener('keyup', emailFieldValidator);
+
 //=====================================================
 // ----------------ACCESSIBILITY---------------------
 //=====================================================
