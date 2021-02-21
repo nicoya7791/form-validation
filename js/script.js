@@ -7,11 +7,14 @@ const jobOptionSelection = document.querySelector('#title');
 const shirtsDesign = document.querySelector('#design');
 const shirtsColor = document.querySelector('#color');
 const activityBoxInput = document.querySelectorAll('#activities-box input');
-const activityBox = document.querySelector('#activities-box');
+//const activityBox = document.querySelector('#activities-box');
+const costPara = document.querySelector('#activities-cost')
 const paymentMethod = document.querySelectorAll('#payment option');
 const paypalOption = document.querySelector('#paypal');
 const bitcoinOption = document.querySelector('#bitcoin');
 const creditCardOption = document.querySelector('#credit-card');
+const cardNumber= document.querySelector('#cc-num')
+
 let payOptionArray=[paypalOption, creditCardOption, bitcoinOption];
 let totalCost = 0;
 
@@ -66,11 +69,13 @@ function activiySelection(event){
 	for (let i = 0; i < activityBoxInput.length; i++) {
 		const element = activityBoxInput[i].dataset.dayAndTime;
 		if (activityDayTime === element && event !== activityBoxInput[i]) {
-			if(event.checked){
+			if(event.checked){				
 			activityBoxInput[i].disabled = true;
+			activityBoxInput[i].parentNode.classList.add('disabled')
 			}
 			else{
-				activityBoxInput[i].disabled =false
+				activityBoxInput[i].disabled =false;
+				activityBoxInput[i].parentNode.classList.remove('disabled');
 			}
 			
 		}
@@ -140,7 +145,7 @@ document.querySelector('#payment').addEventListener('change', (e)=>{
 
 
 //=====================================================
-// ----------------FORM VALIDATION---------------------
+// ----------------FORM FIELDS VALIDATION--------------
 //=====================================================
 //validate name field. Numbers allowed thanks to ELON MUSK.
 const nameFieldValidator = ()=>{
@@ -169,21 +174,29 @@ const emailFieldValidator=()=>{
 const activityValidator= ()=>{
 	const activityIsValid = totalCost > 0;
 	if (activityIsValid) {
-		validationPass(activityBox);
+		validationPass(costPara);
 	} else {
-		validationFail(activityBox);
+		validationFail(costPara);
 	}
 	return activityIsValid;
 }
 //card number validator, number must be between 13 and 14 no spaces or dashes.
+let cardNumberHint = document.querySelector('.cc-hint');
 const cardNumberValidator = ()=>{
-	const cardNumber= document.querySelector('#cc-num')
 	const cardNumberIsValid = /^\d{13,16}$/.test(cardNumber.value);
-	if (cardNumberIsValid) {
-		validationPass(cardNumber);
-	} else {
+	if (cardNumber.value.includes('-')){
+		cardNumberHint.innerHTML='Credit card number must be between 13 and Enter numbers without dashes!'
 		validationFail(cardNumber);
 	}
+
+	if (cardNumberIsValid) {
+		validationPass(cardNumber);
+		
+	} else{
+		validationFail(cardNumber);
+
+	}	
+
 	return cardNumberIsValid;
 }
 //zip code must be 5 digits no space or dash allowed
@@ -252,6 +265,8 @@ form.addEventListener('submit', (e)=>{
 //=====================================================
 nameElement.addEventListener('keyup', nameFieldValidator);
 email.addEventListener('keyup', emailFieldValidator);
+cardNumber.addEventListener('keyup', cardNumberValidator);
+
 
 //=====================================================
 // ----------------ACCESSIBILITY---------------------
@@ -286,7 +301,7 @@ function validationPass(element) {
 function validationFail(element) {
 	let elementLabel = element.parentNode;
 
-	elementLabel.className = 'not-valid';
+	elementLabel.classList.add('not-valid');
 	elementLabel.classList.remove('valid');
 	//shows hint is validation fail.
 	elementLabel.lastElementChild.style.display = 'block';
