@@ -1,4 +1,4 @@
-// global variables
+// Global variables
 const form = document.querySelector('form');
 const nameElement = document.querySelector('#name');
 const email = document.querySelector('#email');
@@ -7,13 +7,16 @@ const jobOptionSelection = document.querySelector('#title');
 const shirtsDesign = document.querySelector('#design');
 const shirtsColor = document.querySelector('#color');
 const activityBoxInput = document.querySelectorAll('#activities-box input');
-//const activityBox = document.querySelector('#activities-box');
 const costPara = document.querySelector('#activities-cost')
 const paymentMethod = document.querySelectorAll('#payment option');
 const paypalOption = document.querySelector('#paypal');
 const bitcoinOption = document.querySelector('#bitcoin');
 const creditCardOption = document.querySelector('#credit-card');
 const cardNumber= document.querySelector('#cc-num')
+const zipCode = document.querySelector('#zip');
+const cvv = document.querySelector('#cvv');
+
+
 
 let payOptionArray=[paypalOption, creditCardOption, bitcoinOption];
 let totalCost = 0;
@@ -24,10 +27,14 @@ let totalCost = 0;
 shirtsColor.disabled=true;
 // give focus to name Input
 nameElement.focus();
-//hides the job role input on page load. if added during otherJobRole var declaration
+//hides the job role input on page load. If added during otherJobRole var declaration
 //it will overrides the e.listener.
 otherJobRole.hidden = true;
-//this event hide/diplay the 'other' job selection.
+
+//show default payment opting on page load.
+defaultPaymentMethod();
+
+//This event hide the jobs roles not selected. I shows only currenty selection. 
 jobOptionSelection.addEventListener('change', (e) => {
 	for (let i = 0; i < jobOptionSelection.length; i++) {
 		let jobSelection = jobOptionSelection[i].value;
@@ -42,7 +49,7 @@ jobOptionSelection.addEventListener('change', (e) => {
 //===================================================================
 //------------------T-SHIRT SECTION----------------------------------
 //===================================================================
-//event listener to display color available base on the t-shirt theme.
+//Event listener to display color available base on the t-shirt theme selected. colors disabled if not theme selected.
 shirtsDesign.addEventListener('change', (e)=>{
 	const clicked = e.target;
 	//gets the value of the selected design.
@@ -63,11 +70,13 @@ shirtsDesign.addEventListener('change', (e)=>{
 	}
 
 })
-//PREVENTS USER FROM SELECTING COURSES SAME DAY AND TIME.
+//Prevent user from selecting activities same day and time.
+//This function is call in the activity event listerner 
 function activiySelection(event){
 	const activityDayTime = event.dataset.dayAndTime;
 	for (let i = 0; i < activityBoxInput.length; i++) {
 		const element = activityBoxInput[i].dataset.dayAndTime;
+		//check the attribute day and time of selected activity then disable the other with the same attribute.
 		if (activityDayTime === element && event !== activityBoxInput[i]) {
 			if(event.checked){				
 			activityBoxInput[i].disabled = true;
@@ -105,10 +114,14 @@ document.querySelector('#activities').addEventListener('change', (e)=>{
 	//displays the updated total cost.
 	p.textContent = (`Total: $${totalCost}`);
 })
+//================ends activity event listener=========================
+
+//=====================================================================
+//------------------------PAYMENTS SECTION-----------------------------
+//=====================================================================
 //function to show credit card as default payment and hides the other options.
 function defaultPaymentMethod(){
-	//set credit card as default on pageload. Using for loop, so if more payments added will still work.
-	
+	//set credit card as default on pageload. Using for loop, so if more payments options added will still work.
 	for (let i = 0; i < paymentMethod.length; i++) {
 		let payId = paymentMethod[i].value;
 		if (payId==='credit-card') {
@@ -116,13 +129,8 @@ function defaultPaymentMethod(){
 		}
 	}
 	paypalOption.hidden=true;
-	bitcoinOption.hidden=true;
-	
-	
+	bitcoinOption.hidden=true;	
 }
-//show default payment opting on page load.
-defaultPaymentMethod();
-
 
 //event listener to show or hide payment options base on paymen method.
 document.querySelector('#payment').addEventListener('change', (e)=>{
@@ -141,7 +149,7 @@ document.querySelector('#payment').addEventListener('change', (e)=>{
 		}
 		
 })
-
+//==================ENDS PAYMENT SECTIONS================
 
 
 //=====================================================
@@ -149,7 +157,7 @@ document.querySelector('#payment').addEventListener('change', (e)=>{
 //=====================================================
 //validate name field. Numbers allowed thanks to ELON MUSK.
 const nameFieldValidator = ()=>{
-	const nameIsValid = /^[a-zA-Z0-9]+ ?[a-zA-Z0-9]*?[ -]?[a-zA-Z0-9]*?$/.test(nameElement.value);
+	const nameIsValid = nameElement.value !== '';
 	if (nameIsValid) {
 		validationPass(nameElement);
 	} else {
@@ -185,7 +193,7 @@ let cardNumberHint = document.querySelector('.cc-hint');
 const cardNumberValidator = ()=>{
 	const cardNumberIsValid = /^\d{13,16}$/.test(cardNumber.value);
 	if (cardNumber.value.includes('-')){
-		cardNumberHint.innerHTML='Credit card number must be between 13 and Enter numbers without dashes!'
+		cardNumberHint.innerHTML='Credit card number must be between 13-16 digits. Enter numbers without dashes!'
 		validationFail(cardNumber);
 	}
 
@@ -201,7 +209,6 @@ const cardNumberValidator = ()=>{
 }
 //zip code must be 5 digits no space or dash allowed
 const zipCodeValidator=()=>{
-	const zipCode = document.querySelector('#zip');
 	const zipIsValid = /^\d{5}$/.test(zipCode.value);
 	if (zipIsValid) {
 		validationPass(zipCode);
@@ -212,7 +219,6 @@ const zipCodeValidator=()=>{
 }
 //cvv must be 3 digtis no space or dashes allowed.
 const cvvValidator = ()=>{
-	const cvv = document.querySelector('#cvv');
 	
 	const cvvIsValid= /^\d{3}$/.test(cvv.value);
 	if (cvvIsValid) {
@@ -222,6 +228,8 @@ const cvvValidator = ()=>{
 	}
 	return cvvIsValid;	
 }
+//================ENDS FORM FIELDS VALIDATIONS===========
+
 //=============================================
 //-----------FORM EVENT LISTENER---------------
 //=============================================
@@ -229,57 +237,55 @@ form.addEventListener('submit', (e)=>{
 	
 	if(!nameFieldValidator()){
 		e.preventDefault();
-		console.log('name not valid');
 	}
 	if(!emailFieldValidator()){
 		e.preventDefault();
-		console.log('email not valid');
 	}
 	if(!activityValidator()){
 		e.preventDefault();
-		console.log('activity not valid');
 	}
 	//only check this fields if the credict card option was selected.
 	if(creditCardOption.hidden !== true){
 		
 		if(!cardNumberValidator()){
 			e.preventDefault();
-			console.log('card not valid');
 		}
-
 			
 		if(!zipCodeValidator()){
 			e.preventDefault();
-			console.log('zip code not valid');
 		}
 		if(!cvvValidator()){
 			e.preventDefault();
-			console.log('cvv not valid');
 		}
 	}
 	
 
 })
+//=======================ENDS FORM EVENT LISTENER================
+
+
 //=====================================================
 //-------------REAL TIME VALIDATION--------------------
 //=====================================================
 nameElement.addEventListener('keyup', nameFieldValidator);
 email.addEventListener('keyup', emailFieldValidator);
 cardNumber.addEventListener('keyup', cardNumberValidator);
+zipCode.addEventListener('keyup', zipCodeValidator);
+cvv.addEventListener('keyup', cvvValidator);
 
 
 //=====================================================
 // ----------------ACCESSIBILITY---------------------
 //=====================================================
-//activityboxinput holds array of input.
+//activityboxinput holds array of input. Adds and removes focus to activity labels
 for (let i = 0; i < activityBoxInput.length; i++) {
 	activityBoxInput[i].addEventListener('focus', (e)=>{
-		//adds focus to active label
+		//adds focus class to active label
 		activityBoxInput[i].parentElement.classList.add('focus');
 
 	});
 	activityBoxInput[i].addEventListener('blur', (e)=>{
-		//removes focus from inactive lable.
+		//removes focus class from inactive lable.
 		const activeLable = document.querySelector('.focus');
 		if(activeLable){
 			activeLable.classList.remove('focus');
@@ -291,7 +297,7 @@ for (let i = 0; i < activityBoxInput.length; i++) {
 //=====================================================
 function validationPass(element) {
 	let elementLabel = element.parentNode;
-	elementLabel.className = 'valid';
+	elementLabel.classList.add('valid');
 	elementLabel.classList.remove('not-valid');
 	//hides the hint is validation pass.
 	elementLabel.lastElementChild.style.display = 'none';
