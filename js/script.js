@@ -52,6 +52,7 @@ jobOptionSelection.addEventListener('change', (e) => {
 //Event listener to display color available base on the t-shirt theme selected. colors disabled if not theme selected.
 shirtsDesign.addEventListener('change', (e)=>{
 	const clicked = e.target;
+	
 	//gets the value of the selected design.
 	const clickedValue = clicked.value;
 	//if t-shirt design is selected, color options are available for that specific design.
@@ -62,6 +63,7 @@ shirtsDesign.addEventListener('change', (e)=>{
 			const element = shirtsColor[i].getAttribute('data-theme');
 			if(clickedValue === element){
 				shirtsColor[i].style.display = 'inherit';
+				shirtsColor[i].selected = true;
 			}else{
 				shirtsColor[i].style.display = 'none';
 			}
@@ -169,7 +171,7 @@ const nameFieldValidator = ()=>{
 //email validation, validate most common emails.
 const emailFieldValidator=()=>{
 	//const emailValue = email.value;
-	const emailIsValid = /^[^@]+@[^@.]+\.[a-z]*$/i.test(email.value);
+	const emailIsValid = /^[^@]+@[^@.]+\.[a-z]{2,}$/i.test(email.value);
 	
 	if (emailIsValid) {
 		validationPass(email);
